@@ -19,7 +19,7 @@ using std::vector;
 #include <iostream>
 // TODO: Return the system's CPU
 Processor& System::Cpu() { 
-    cpu_ = Processor();
+    // cpu_ = Processor();
     return cpu_; }
 
 // TODO: Return a container composed of the system's processes
