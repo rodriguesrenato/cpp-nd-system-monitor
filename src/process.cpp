@@ -24,12 +24,14 @@ void Process::CpuUtilization(long activeJiffies, long totalJiffies) {
         long activeDiff = activeJiffies - Process::activeJiffiesPrev_;
         long totalDiff = totalJiffies - Process::totalJiffiesPrev_;
 
-        // Update previous values stored in class
-        Process::activeJiffiesPrev_ = activeJiffies;
-        Process::totalJiffiesPrev_ = totalJiffies;
+        if (totalDiff > 0) {
+            // Update previous values stored in class
+            Process::activeJiffiesPrev_ = activeJiffies;
+            Process::totalJiffiesPrev_ = totalJiffies;
 
-        cpuUtilization = (float)activeDiff / (float)totalDiff;
-        // calculate cpu utilization and update cpuUtilization_
+            // calculate cpu utilization and update cpuUtilization_
+            cpuUtilization = (float)activeDiff / (float)totalDiff;
+        }
     }
     Process::cpuUtilization_ = cpuUtilization;
 }
