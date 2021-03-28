@@ -32,20 +32,24 @@ string LinuxParser::OperatingSystem() {
             }
         }
     }
+    filestream.close();
     return value;
 }
 
 // Read and return Kernel information from /proc/version
 string LinuxParser::Kernel() {
     string kernel{};
-    string line, os, version;
-    std::ifstream stream(kProcDirectory + kVersionFilename);
+    string line;
+    string os;
+    string version;
+    std::ifstream filestream(kProcDirectory + kVersionFilename);
 
-    if (stream.is_open()) {
-        std::getline(stream, line);
+    if (filestream.is_open()) {
+        std::getline(filestream, line);
         std::istringstream linestream(line);
         linestream >> os >> version >> kernel;
     }
+    filestream.close();
     return kernel;
 }
 
@@ -114,17 +118,21 @@ float LinuxParser::MemoryUtilization() {
             }
         }
     }
+    filestream.close();
     return mem_utilization;
 }
 
 // Read and return the system uptime from /proc/uptime.
 // If a conversion error happens, just return uptime 0
 long LinuxParser::UpTime() {
-    string line, uptimeStr, idletimeStr;
+    string line;
+    string uptimeStr;
+    string idletimeStr;
     long uptime{0};
-    std::ifstream stream(kProcDirectory + kUptimeFilename);
-    if (stream.is_open()) {
-        std::getline(stream, line);
+
+    std::ifstream filestream(kProcDirectory + kUptimeFilename);
+    if (filestream.is_open()) {
+        std::getline(filestream, line);
         std::istringstream linestream(line);
         linestream >> uptimeStr >> idletimeStr;
         try {
@@ -133,6 +141,7 @@ long LinuxParser::UpTime() {
             return uptime;
         }
     }
+    filestream.close();
     return uptime;
 }
 
@@ -183,7 +192,7 @@ long LinuxParser::ActiveJiffies(int pid) {
             }
         }
     }
-
+    filestream.close();
     return activeJiffies;
 }
 
@@ -206,7 +215,6 @@ long LinuxParser::ActiveJiffies() {
             }
         }
     }
-
     return activeJiffies;
 }
 
@@ -229,7 +237,6 @@ long LinuxParser::IdleJiffies() {
             }
         }
     }
-
     return idleJiffies;
 }
 
@@ -258,7 +265,7 @@ vector<string> LinuxParser::CpuUtilization() {
             }
         }
     }
-
+    filestream.close();
     return jiffiesVec;
 }
 
@@ -282,6 +289,7 @@ int LinuxParser::TotalProcesses() {
             }
         }
     }
+    filestream.close();
 
     // If a conversion error happens, just return 0.
     try {
@@ -311,6 +319,7 @@ int LinuxParser::RunningProcesses() {
             }
         }
     }
+    filestream.close();
 
     // If a conversion error happens, just return 0.
     try {
@@ -331,6 +340,7 @@ string LinuxParser::Command(int pid) {
     if (filestream.is_open()) {
         std::getline(filestream, cmdline);
     }
+    filestream.close();
     return cmdline;
 }
 
@@ -362,7 +372,7 @@ string LinuxParser::Ram(int pid) {
             }
         }
     }
-
+    filestream.close();
     return processRam;
 }
 
@@ -388,6 +398,7 @@ string LinuxParser::Uid(int pid) {
             }
         }
     }
+    filestream.close();
     return userUID;
 }
 
@@ -421,6 +432,7 @@ string LinuxParser::User(int pid) {
             }
         }
     }
+    filestream.close();
     return username;
 }
 
@@ -457,6 +469,6 @@ long LinuxParser::UpTime(int pid) {
             }
         }
     }
-
+    filestream.close();
     return processUpTime;
 }
