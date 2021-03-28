@@ -1,27 +1,33 @@
-#include "linux_parser.h"
 #include "processor.h"
+
 #include <string>
 #include <vector>
 
+#include "linux_parser.h"
 
-// TODO: Return the aggregate CPU utilization
-float Processor::Utilization()
-{
-    // Processor::cpuJiffs_ = LinuxParser::CpuUtilization();
+// Return the aggregate CPU utilization
+float Processor::Utilization() {
+    float cpuUtilization{0};
 
-    // get current jiffies values
+    // Get active and total jiffies values
     long activeJiffies = LinuxParser::ActiveJiffies();
-    // long idleJiffies = LinuxParser::IdleJiffies();
     long totalJiffies = LinuxParser::Jiffies();
 
-    // calculate difference from current to previous values
-    long totalDiff = totalJiffies - Processor::totalJiffiesPrev_;
-    long activeDiff = activeJiffies - Processor::activeJiffiesPrev_;
+    // calculate cpu utilization only if active and total jiffies are valid
+    if (totalJiffies > 0 && activeJiffies > 0) {
+        // calculate difference from current to previous values
+        long totalDiff = totalJiffies - Processor::totalJiffiesPrev_;
+        long activeDiff = activeJiffies - Processor::activeJiffiesPrev_;
+        
+        if (totalDiff > 0) {
+            // Update previous values stored in class
+            Processor::totalJiffiesPrev_ = totalJiffies;
+            Processor::activeJiffiesPrev_ = activeJiffies;
 
-    // Update previous values stored in class
-    Processor::totalJiffiesPrev_ = totalJiffies;
-    Processor::activeJiffiesPrev_ = activeJiffies;
-
+            // calculate cpu utilization
+            cpuUtilization = (float)activeDiff / (float)totalDiff;
+        }
+    }
     // Return cpu utilization
-    return (float)activeDiff/(float)totalDiff;
+    return cpuUtilization;
 }
